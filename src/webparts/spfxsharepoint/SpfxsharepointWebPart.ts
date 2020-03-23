@@ -8,12 +8,12 @@ import { escape } from '@microsoft/sp-lodash-subset';
 
 import styles from './SpfxsharepointWebPart.module.scss';
 import * as strings from 'SpfxsharepointWebPartStrings';
+import pnp from 'sp-pnp-js';
 
 
-
-import {
-  SPHttpClient
-} from '@microsoft/sp-http';
+// import {
+//   SPHttpClient
+// } from '@microsoft/sp-http';
 
 
 export interface ISPLists {
@@ -32,19 +32,26 @@ export interface ISpfxsharepointWebPartProps {
 export default class SpfxsharepointWebPart extends BaseClientSideWebPart<ISpfxsharepointWebPartProps> {
 
   
-  private _getListData(): Promise<ISPLists> {
-    return this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl + `/_api/web/lists/GetByTitle('student_list')/Items`, SPHttpClient.configurations.v1)
-      .then((response: any) => {
-        debugger;
-        return response.json();
-      });
-  }
+  // private _getListData(): Promise<ISPLists> {
+  //   return this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl + `/_api/web/lists/GetByTitle('student_list')/Items`, SPHttpClient.configurations.v1)
+  //     .then((response: any) => {
+  //       debugger;
+  //       return response.json();
+  //     });
+  // }
+  private _getListData(): Promise<ISPList[]> {
+    return pnp.sp.web.lists.getByTitle("student_list").items.get().then((response) => {
+     
+       return response;
+     });
+       
+    }
   private _renderListAsync(): void {
 
 
     this._getListData()
       .then((response) => {
-        this._renderList(response.value);
+        this._renderList(response);
       });
 
   }
